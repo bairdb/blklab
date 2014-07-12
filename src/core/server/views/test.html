@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test Requests</title>
+    <link href='http://fonts.googleapis.com/css?family=Vollkorn:400italic,700italic,400,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Arvo:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <style>
+        body{
+            font-family:'Open Sans';
+            margin:0px;
+            padding:0px;
+            color:#272727;
+            background:#c7c7c7;
+        }
+
+        input, textarea, select{
+            font-family:'Open Sans';
+            font-size:18px;
+            background:#d7d7d7;
+            border:solid 2px #a7a7a7;
+            padding:5px;
+            width:100%;
+            border-radius:4px;
+            margin-bottom:5px;
+        }
+
+        select{
+            font-size: 18px;
+            border:solid 2px #a7a7a7;
+            border-radius:4px;
+            color:#272727;
+            padding: 5px;
+            width: 300px;
+            -webkit-appearance: none;
+            background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50px' height='50px'><polyline points='46.139,15.518 25.166,36.49 4.193,15.519'/></svg>") right no-repeat;
+            background-color:#d7d7d7;
+            background-transparency: 0.5;
+            background-position: right 5px top 8px;
+            background-size: 18px 18px;
+        }
+
+        select:active{
+            outline:inherit;
+        }
+
+        input[type="button"]{
+            padding:4px 10px;
+            font-size:16px;
+            font-family:'Arvo';
+            font-weight:400;
+            text-transform:uppercase;
+            background:#31c98a;
+            border:#dddddd;
+            color:white;
+            cursor:pointer;
+            width:auto;
+            opacity:.8;
+            border-radius:4px;
+            -webkit-appearance: none;
+            -webkit-transition: all 0.2s ease-out;
+            -moz-transition: all 0.2s ease-out;
+            -o-transition: all 0.2s ease-out;
+            -ms-transition: all 0.2s ease-out;
+            transition: all 0.2s ease-out;
+        }
+
+        input[type="button"]:hover{
+            opacity:1;
+        }
+
+        select{
+            width:auto;
+        }
+
+        h1,h2,h3{
+            font-family:'Arvo';
+            font-weight:700;
+            text-transform:uppercase;
+        }
+
+        h1{
+            width:100%;
+            text-align:center;
+            padding:20px;
+            margin:0px;
+            background:#2c2a27;
+            color:#c7c7c7;
+        }
+
+        section.wrapper{
+            padding:20px;
+            width:30%;
+            margin:0px auto;
+        }
+
+        #message{
+            color:#ca3068;
+            font-family:'Arvo';
+            font-weight:400;
+            text-transform:lowercase;
+        }
+
+        #response{
+            padding:20px 1%;
+            border:solid 1px #b7b7b7;
+            border-radius:4px;
+            width:100%;
+        }
+
+        #response span{
+            display:block;
+            cursor:pointer;
+            width:100%;
+            border-bottom:solid 1px black;
+        }
+
+        #response span:hover{
+            background-color:#ff39de;
+        }
+
+        #response span h3{
+            text-transform:lowercase;
+        }
+
+        @media only screen and (max-device-width: 1024px) {
+            section.wrapper{
+                padding:20px;
+                width:50%;
+                margin:0px auto;
+            }
+        }
+    </style>
+    <script>
+        function loadMessage(id){
+            var response = document.getElementById('msg')
+            response.src = '/api/mail/' + id
+        }
+
+        function testCall(){
+            document.getElementById('progress').style.width = '0px';
+            var payload = document.getElementById('payload').value;
+            var method = document.getElementById('method').value;
+            var path = document.getElementById('path').value;
+            var oReq = new XMLHttpRequest();
+            //oReq.responseType = "json";
+            oReq.open(method, path, true);
+            oReq.setRequestHeader("Content-type", 'application/json');//"application/x-www-form-urlencoded")
+            oReq.onload = function(e) {
+              response.innerHTML = oReq.responseText;
+            }
+
+            oReq.addEventListener("progress", updateProgress, false);
+            oReq.addEventListener("load", transferComplete, false);
+            oReq.addEventListener("error", transferFailed, false);
+            oReq.addEventListener("abort", transferCanceled, false);
+
+            if(method == 'GET'){
+                oReq.send();
+            }else{
+                oReq.send(payload);
+            }
+        }
+
+        function updateProgress (oEvent) {
+            var response = document.getElementById('progress')
+            if (oEvent.lengthComputable) {
+                var percentComplete = oEvent.loaded / oEvent.total;
+                response.style.width = 400 * percentComplete + 'px';
+            }
+        }
+
+        function transferComplete(evt) {
+            var response = document.getElementById('message')
+            response.innerHTML = "Finished Loading.";
+        }
+
+        function transferFailed(evt) {
+            var response = document.getElementById('message')
+            response.innerHTML = "An error occurred while transferring the file.";
+        }
+
+        function transferCanceled(evt) {
+            var response = document.getElementById('message')
+            response.innerHTML = "The transfer has been canceled by the user.";
+        }
+    </script>
+</head>
+<body>
+
+    <h1>API Test Requests</h1>
+    <section class="wrapper">
+        <select id="method">
+            <option>GET</option>
+            <option>POST</option>
+            <option>PUT</option>
+            <option>DELETE</option>
+        </select>
+        <br>
+        <input type="text" id="path" value="http://192.168.33.101:8080">
+        <br>
+        <textarea id="payload" style="height:150px;"></textarea>
+        <Br>
+        <input type="button" onclick="testCall()" value="Submit">
+
+        <h2 id="message"></h2>
+
+        <div id="response"></div>
+
+        <div id="progress"></div>
+    </section>
+</body>
+</html>
+
