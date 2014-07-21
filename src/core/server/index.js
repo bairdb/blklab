@@ -11,17 +11,16 @@ exports.init = function(){
     var server = express();
 
     server.set('port', process.env.PORT || 8080);
-    server.use(bodyParser.json());
+	server.set('views', path.join(__dirname, 'views'));
+	server.use(bodyParser.json());
     server.use(bodyParser.urlencoded());
     server.use(cookieParser());
     server.use(favicon());
-    server.use(express.logger('dev'));
-    server.use(express.json());
-    server.use(express.urlencoded());
-    server.use(express.methodOverride());
-    server.use(server.router);
     server.use(express.static(path.join(__dirname, 'public')));
-    server.set('views', path.join(__dirname, 'views'));
+
+	//routes
+   	server.use('/', routes.site);
+	/////route-end/////
 
     // development only
     if (server.get('env') === 'development') {
@@ -40,9 +39,6 @@ exports.init = function(){
         err.status = 404;
         next(err);
     });
-
-    routes.admin(server);
-    routes.site(server);
 
     return server;
 };

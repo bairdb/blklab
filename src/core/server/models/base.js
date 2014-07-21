@@ -81,6 +81,36 @@ Model.prototype.load = function(query, callback){
     })
 }
 
+Model.prototype.load = function(query, callback){
+	var self = this;
+	this.connection(self.collection, function(err, collection){
+		if(err){return callback(err);}
+		collection.find(query).toArray(function(err, items){
+			callback(err, items);
+		});
+	})
+}
+
+Model.prototype.update = function(query, qupdate, callback){
+	var self = this;
+	this.connection(self.collection, function(err, collection){
+		if(err){return callback(err);}
+		collection.remove(query, {$set:qupdate}, {w:1}, function(err, result){
+			callback(err, result);
+		});
+	})
+}
+
+Model.prototype.del = function(query, callback){
+	var self = this;
+	this.connection(self.collection, function(err, collection){
+		if(err){return callback(err);}
+		collection.remove(query, {w:1}, function(err, result){
+			callback(err, result);
+		});
+	})
+}
+
 //Static
 
 Model.extend = function(methods){

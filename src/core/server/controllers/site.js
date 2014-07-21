@@ -36,7 +36,29 @@ var controllers = {
                 res.send(result);
             }
         });
-    }
+    },
+
+	update: function(req, res){
+		var path = req.params.ident;
+		siteModel.update({'identifier': path}, req.body, function(err, items){
+			if(err){
+				res.send('Error ' + err);
+			}else{
+				res.send(items);
+			}
+		});
+	},
+
+	remove: function(req, res){
+		var path = req.params.ident;
+		siteModel.update({'identifier': path}, {"deleted": 1}, function(err, items){
+			if(err){
+				res.send('Error ' + err);
+			}else{
+				res.send(items);
+			}
+		});
+	}
 };
 
 module.exports = controllers;

@@ -1,10 +1,13 @@
 var site = require('../controllers/site');
+var express = require('express');
+var router = express.Router();
 
-module.exports = function(server){
-    server.get('/home', site.home);
-    server.get('/', site.home);
-    server.get('/req', site.req);
-    server.get('/:ident', site.page);
+router.route('/home').get(site.home);
+router.route('/').get(site.home);
+router.route('/req').get(site.req);
+router.route('/add_page').post(site.add_page);
+router.route('/:ident').get(site.page);
+router.route('/:ident').put(site.update);
+router.route('/:ident').delete(site.remove);
 
-    server.post('/pages/create/:name', site.add_page);
-};
+module.exports = router;
