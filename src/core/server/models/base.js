@@ -81,12 +81,12 @@ Model.prototype.load = function(query, callback){
     })
 }
 
-Model.prototype.load = function(query, callback){
+Model.prototype.findOne = function(query, callback){
 	var self = this;
 	this.connection(self.collection, function(err, collection){
 		if(err){return callback(err);}
-		collection.find(query).toArray(function(err, items){
-			callback(err, items);
+		collection.findOne(query, function(err, item){
+			callback(err, item);
 		});
 	})
 }
@@ -94,8 +94,7 @@ Model.prototype.load = function(query, callback){
 Model.prototype.update = function(query, qupdate, callback){
 	var self = this;
 	this.connection(self.collection, function(err, collection){
-		if(err){return callback(err);}
-		collection.remove(query, {$set:qupdate}, {w:1}, function(err, result){
+		collection.update(query, {$set:qupdate}, {w:1}, function(err, result){
 			callback(err, result);
 		});
 	})

@@ -20,6 +20,7 @@ exports.init = function(){
 
 	//routes
    	server.use('/', routes.site);
+	server.use('/api/users', routes.users);
 	/////route-end/////
 
     // development only

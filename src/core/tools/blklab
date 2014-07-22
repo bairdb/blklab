@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'thor'
+
+class Blklab < Thor
+	desc "create", "Create a new module"
+	method_option :name, :aliases => "-n", :desc => "Module Name"
+	def create
+		create = options[:name]
+		puts "Creating module #{create}"
+		begin
+			controller = File.read("templates/controller.tpl.js").gsub(/\[\[module\]\]/, create)
+			File.write("../server/controllers/#{create}.js", controller)
+
+			model = File.read("templates/model.tpl.js").gsub(/\[\[module\]\]/, create)
+			File.write("../server/models/#{create}.js", model)
+
+			routes = File.read("templates/routes.tpl.js").gsub(/\[\[module\]\]/, create)
+			File.write("../server/routes/#{create}.js", routes)
+			
+			index = File.read("../server/routes/index.js").gsub(/\/\/\/\/\/route-include-end\/\/\/\/\//, "var #{create} = require('./#{create}');\n/////route-include-end/////").gsub(/\/\/\/\/\/route-exports-end\/\/\/\/\//, "#{create}: #{create},\n\t/////route-exports-end/////")
+			File.write("../server/routes/index.js", index)
+			server = File.read("../server/index.js").gsub(/\/\/\/\/\/route-end\/\/\/\/\//, "server.use('/api/#{create}', routes.#{create});\n\t/////route-end/////")
+			File.write("../server/index.js", server)
+			
+			puts "Successfully created module"
+		rescue => e
+			puts "Error creating module #{e}"
+		end
+	end
+
+	desc "remove", "Remove a module"
+	method_option :name, :aliases => "-n", :desc => "Module Name"
+	def remove
+		name = options[:name]
+		begin
+			File.delete("../server/controllers/#{name}.js")
+			File.delete("../server/models/#{name}.js")
+			File.delete("../server/routes/#{name}.js")
+			puts "Successfully deleted module"
+		rescue
+			puts "Error deleting module"
+		end
+	end
+end
+
+Blklab.start
