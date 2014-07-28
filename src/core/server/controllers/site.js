@@ -3,6 +3,7 @@ var siteModel = require('../models/site');
 
 var controllers = {
     home: function(req, res) {
+		console.log(req.get('host'));
         siteModel.load({}, function(err, items){
             if(err){
                 res.send('Error ' + err);
