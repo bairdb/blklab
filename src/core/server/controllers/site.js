@@ -1,3 +1,4 @@
+var appDir = process.cwd();
 var Model = require('../models/base');
 var siteModel = require('../models/site');
 
@@ -14,7 +15,7 @@ var controllers = {
     },
 
     req: function(req, res){
-        res.sendfile('/var/www/core/server/views/test.html');
+        res.sendfile(appDir + '/core/server/views/test.html');
     },
 
     page: function(req, res) {
