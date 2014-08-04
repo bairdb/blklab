@@ -11,10 +11,10 @@ module.exports = function (grunt) {
             },
             livereload: {
                 options: {
-                    server: path.resolve('./core/app.js'),
+                    server: path.resolve('./app.js'),
                     livereload: true,
                     serverreload: true,
-                    bases: [path.resolve('./core')]
+                    bases: [path.resolve('./')]
                 }
             }
         }

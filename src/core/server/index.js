@@ -21,6 +21,8 @@ exports.init = function(){
 	//routes
    	server.use('/', routes.site);
 	server.use('/api/users', routes.users);
+	server.use('/api/users', routes.users);
+	server.use('/api/rides', routes.rides);
 	/////route-end/////
 
     // development only

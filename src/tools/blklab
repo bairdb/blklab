@@ -1,0 +1,80 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'thor'
+
+class Blklab < Thor
+	desc "create", "Create a new module"
+	method_option :name, :aliases => "-n", :desc => "Module Name"
+	method_option :path, :aliases => "-p", :desc => "Path"
+	def create
+		create = options[:name]
+		type = options[:path]
+		if type == 'core'
+			path = "../core/server"
+		else
+			path = "../application/server"
+		end
+		puts "Creating module #{create}"
+		begin
+			controller = File.read("templates/controller.tpl.js").gsub(/\[\[module\]\]/, create)
+			File.write("#{path}/controllers/#{create}.js", controller)
+
+			model = File.read("templates/model.tpl.js").gsub(/\[\[module\]\]/, create)
+			File.write("#{path}/models/#{create}.js", model)
+
+			routes = File.read("templates/routes.tpl.js").gsub(/\[\[module\]\]/, create)
+			File.write("#{path}/routes/#{create}.js", routes)
+			
+			tmp = File.open("#{path}/routes/index.js", 'r')
+			new = ""
+			tmp.each do |line|
+				new = "#{new}#{line}"
+				
+				if line.chomp == "//imports"
+					new = "#{new}var #{create} = require('./#{create}')\r\n"
+				end	
+					
+				if line.chomp == "module.exports = {"
+					new = "#{new}\t#{create}: {\"path\":\"/api/#{create}\", \"module\":#{create}},\r\n"
+				end
+			end
+			puts new
+			File.write("#{path}/routes/index.js", new)
+			
+			puts "Successfully created module"
+		rescue => e
+			puts "Error creating module #{e}"
+		end
+	end
+
+	desc "add", "Add A Route"
+	method_option :name, :aliases => "-n", :desc => "Module Name"
+	method_option :path, :aliases => "-p", :desc => "Path"
+	def add
+		name = options[:name]
+		type = options[:path]
+		
+		if type == 'core'
+			path = "../core/server"
+		else
+			path = "../application/server"
+		end
+	end
+	
+	desc "remove", "Remove a module"
+	method_option :name, :aliases => "-n", :desc => "Module Name"
+	def remove
+		name = options[:name]
+		begin
+			File.delete("../server/controllers/#{name}.js")
+			File.delete("../server/models/#{name}.js")
+			File.delete("../server/routes/#{name}.js")
+			puts "Successfully deleted module"
+		rescue
+			puts "Error deleting module"
+		end
+	end
+end
+
+Blklab.start
