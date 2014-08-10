@@ -5,9 +5,11 @@ var favicon = require('static-favicon');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var systemRoutes = require('./core/server/routes');
+var systemRoutes = require('./lib/core/server/routes');
+exports.Model = require('./lib/core/server/models/base');
 
 exports.init = function(appRoutes){
+	console.log('starting');
 	var server = express();
 
 	server.set('port', process.env.PORT || 8080);

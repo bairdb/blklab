@@ -10,15 +10,15 @@ lib-cov
 pids
 logs
 results
-#.vagrant
+.vagrant
 dev
 lib/tmp
 
 node_modules
 npm-debug.log
 
-#Vagrantfile
-#vagrant_start
+Vagrantfile
+vagrant_start
 *.psd
 /lib/Gruntfile.js.local.js
 /lib/core/test.js
