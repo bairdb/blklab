@@ -12,7 +12,7 @@ logs
 results
 #.vagrant
 dev
-src/tmp
+lib/tmp
 
 node_modules
 npm-debug.log
@@ -20,5 +20,7 @@ npm-debug.log
 #Vagrantfile
 #vagrant_start
 *.psd
-/src/Gruntfile.js.local.js
-/src/core/test.js
+/lib/Gruntfile.js.local.js
+/lib/core/test.js
+
+lib/Dockerfile
